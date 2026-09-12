@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Selected Works &mdash; Interactive Portfolio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header / Navigation -->
+  <header>
+    <div class="logo">STUDIO / 01</div>
+    <div class="nav-actions" id="navActions">
+      <!-- Injected dynamically based on Auth State -->
+    </div>
+  </header>
+
+  <!-- Procedural Motion Graphics Canvas Hero -->
+  <section class="hero-container">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-content">
+      <h1>Visual Engineering</h1>
+      <p>Motion &bull; Digital Products &bull; Creative Technology</p>
+    </div>
+  </section>
+
+  <!-- Showcase Gallery Section -->
+  <main class="works">
+    <div class="section-title">
+      <div>
+        <h2>Portfolio Archive</h2>
+        <span class="sub-label">Pin up to 3 projects to prioritize them on top</span>
+      </div>
+      <span id="counter">Showing 0 projects</span>
+    </div>
+
+    <!-- Interactive Grid -->
+    <div class="grid" id="portfolioGrid"></div>
+
+    <!-- See More Button -->
+    <div class="see-more-wrap" id="seeMoreWrap">
+      <button class="see-more-btn" id="seeMoreBtn" onclick="toggleSeeMore()">
+        <span id="seeMoreText">Explore All Works</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </div>
+  </main>
+
+  <!-- Auth Modal: Log In -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Account Login</h3>
+        <button class="close-btn" onclick="toggleModal('loginModal', false)">&times;</button>
+      </div>
+      <p>Enter your credentials to access protected projects.</p>
+      
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <label for="loginIdentifier">Username or Email</label>
+        <input type="text" id="loginIdentifier" placeholder="username or you@domain.com" required>
+
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" required>
+
+        <button type="submit" class="submit-btn">Sign In</button>
+      </form>
+
+      <div class="modal-switch">
+        <span>Don't have an account?</span>
+        <a href="#" onclick="switchModals('loginModal', 'signupModal')">Sign Up</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth Modal: Sign Up -->
+  <div class="modal-overlay" id="signupModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Create an Account</h3>
+        <button class="close-btn" onclick="toggleModal('signupModal', false)">&times;</button>
+      </div>
+      <p>Register to pin works and save custom collections.</p>
+
+      <!-- Google OAuth Trigger -->
+      <button class="google-btn" type="button" onclick="handleGoogleAuth()">
+        <svg viewBox="0 0 48 48">
+          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+        </svg>
+        Sign up with Google
+      </button>
+
+      <div class="divider"><span>OR</span></div>
+      
+      <form id="signupForm" onsubmit="handleSignup(event)">
+        <div class="row-inputs">
+          <div>
+            <label for="regFirstName">First Name</label>
+            <input type="text" id="regFirstName" placeholder="Jane" required>
+          </div>
+          <div>
+            <label for="regLastName">Last Name</label>
+            <input type="text" id="regLastName" placeholder="Doe" required>
+          </div>
+        </div>
+
+        <label for="regUsername">Username</label>
+        <input type="text" id="regUsername" placeholder="janedoe" required>
+
+        <label for="regEmail">Email Address</label>
+        <input type="email" id="regEmail" placeholder="jane.doe@example.com" required>
+
+        <label for="regPassword">Password</label>
+        <input type="password" id="regPassword" placeholder="Minimum 6 characters" minlength="6" required>
+
+        <button type="submit" class="submit-btn">Create Account</button>
+      </form>
+
+      <div class="modal-switch">
+        <span>Already have an account?</span>
+        <a href="#" onclick="switchModals('signupModal', 'loginModal')">Sign In</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project Upload Modal -->
+  <div class="modal-overlay" id="uploadModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Publish New Work</h3>
+        <button class="close-btn" onclick="toggleModal('uploadModal', false)">&times;</button>
+      </div>
+      <p>Add a new entry directly into the project archive.</p>
+      
+      <form id="projectForm" onsubmit="handleProjectSubmit(event)">
+        <label for="projTitle">Project Name</label>
+        <input type="text" id="projTitle" placeholder="e.g. Spectral Audio" required>
+
+        <label for="projCategory">Category</label>
+        <input type="text" id="projCategory" placeholder="e.g. Interaction Design, WebGL" required>
+
+        <label for="projImage">Project Media</label>
+        <input type="file" id="projImage" accept="image/*" required>
+
+        <button type="submit" class="submit-btn">Publish to Showcase</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
